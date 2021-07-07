@@ -38,12 +38,12 @@ jsonData = {
 }
 
 // Function to lookup an array element and returns an array 
-function arrayLookup(searchValue, array, searchIndex, returnIndex, searchPlace) {
+function arrayLookup(searchValue, array, searchIndex, returnIndex, searchPlace, compareInd) {
     let returnVal = [];
     let ind;
     for (ind = 0; ind < array.length; ind++) {
         if (array[ind][searchIndex] == searchValue) {
-            if (array[ind][0] == searchPlace)
+            if (array[ind][compareInd] == searchPlace)
                 returnVal.push(array[ind][returnIndex]);
         }
     }
@@ -93,7 +93,7 @@ function deconstructJson({
             dataKey = getKeyByValue(dataNames, data[0])
             
             for (placeIdValue of dataDimensions[placesId]) {
-                arr = arrayLookup(placeIdValue, rows, 1, 2, dataKey)
+                arr = arrayLookup(placeIdValue, rows, 1, 2, dataKey, 0)
                 data.push(arr)
             }
         }
@@ -102,6 +102,7 @@ function deconstructJson({
         // Constructing the table rows 
         return [tableHeader, tableData]
     }
+    
 
     // Code for the second table
     if (tableType == 2) {
@@ -114,11 +115,13 @@ function deconstructJson({
             tableHeader.push(dataNames[dataIdValue])
     
         }
+        
 
         // get the table data 
         let tableData = []
 
         // map all data
+        
         
         for (placeIdValue of dataDimensions[placesId]) {
             tableData.push([dataNames[placeIdValue]])
@@ -128,11 +131,13 @@ function deconstructJson({
         for (place of tableData) {
             // add the place details
             dataKey = getKeyByValue(dataNames, place[0])
-            for (placeIdValue of dataDimensions[placesId]) {
-                arr = arrayLookup(placeIdValue, rows, 1, 2, dataKey)
+            for (dataIdValue of dataDimensions[dataId]) {
+                arr = arrayLookup(dataIdValue, rows, 0, 2, dataKey, 1)
                 place.push(arr)
             }
+            console.log(dataKey)
         }
+        // console.log(tableData)
         // console.log(tableData)
         return [tableHeader, tableData]
 
