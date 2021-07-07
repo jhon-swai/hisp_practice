@@ -50,10 +50,13 @@ function arrayLookup(searchValue, array, searchIndex, returnIndex, searchPlace, 
     return returnVal;
 }
 
+// function for getting object key from value 
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
-  }
+}
 
+
+// Function for deconstructing a json object 
 function deconstructJson({
     headers: [{
         id: dataId
@@ -68,7 +71,7 @@ function deconstructJson({
     },
     rows
 }, tableType) {
-    
+
     // Code for the first table
     if (tableType == 1) {
         // constructing the table header
@@ -80,7 +83,7 @@ function deconstructJson({
             tableHeader.push(dataNames[placeIdValue])
         }
 
-        // get the table data 
+        // array for table data 
         let tableData = []
 
         // map all data
@@ -91,18 +94,18 @@ function deconstructJson({
         for (data of tableData) {
             // add the place details
             dataKey = getKeyByValue(dataNames, data[0])
-            
+
             for (placeIdValue of dataDimensions[placesId]) {
                 arr = arrayLookup(placeIdValue, rows, 1, 2, dataKey, 0)
                 data.push(arr)
             }
         }
-        
+
 
         // Constructing the table rows 
         return [tableHeader, tableData]
     }
-    
+
 
     // Code for the second table
     if (tableType == 2) {
@@ -113,16 +116,15 @@ function deconstructJson({
         for (dataIdValue of dataDimensions[dataId]) {
             // get the place name using the ID in the dimensions 
             tableHeader.push(dataNames[dataIdValue])
-    
-        }
-        
 
-        // get the table data 
+        }
+
+
+        // array for the table data 
         let tableData = []
 
         // map all data
-        
-        
+
         for (placeIdValue of dataDimensions[placesId]) {
             tableData.push([dataNames[placeIdValue]])
         }
@@ -145,31 +147,31 @@ function deconstructJson({
 
 }
 
-const [tableHeader, tableData]= deconstructJson(jsonData, 1)
+const [tableHeader, tableData] = deconstructJson(jsonData, 1)
 
 
-
+// Function for creating a table
 function createTable(jsonDataValue, tableType) {
     let table = null
     if (tableType == 1) {
-        table = document.getElementById('table1')}
-     else {
-        table = document.getElementById('table2')  
+        table = document.getElementById('table1')
+    } else {
+        table = document.getElementById('table2')
     }
     let tableHead = document.createElement('thead')
     let tableBody = document.createElement('thead')
 
-    const [tableHeader, tableData]= deconstructJson(jsonDataValue, tableType)
-    
+    const [tableHeader, tableData] = deconstructJson(jsonDataValue, tableType)
+
     // populate the header 
-    for (let ind = 0; ind < tableHeader.length; ind++){
+    for (let ind = 0; ind < tableHeader.length; ind++) {
         let th = document.createElement('th')
-        th.textContent = tableHeader[ind] 
-        tableHead.appendChild(th)       
+        th.textContent = tableHeader[ind]
+        tableHead.appendChild(th)
     }
 
     // populate the columns
-    for (row of tableData){
+    for (row of tableData) {
         let tr = document.createElement('tr')
 
         // creating the first column
@@ -179,26 +181,27 @@ function createTable(jsonDataValue, tableType) {
 
 
         // adding the data
-        for (let ind = 1; ind <= row.length; ind++){
+        for (let ind = 1; ind <= row.length; ind++) {
             let td = document.createElement('td')
             td.textContent = row[ind]
             tr.appendChild(td)
         }
         tableBody.appendChild(tr)
-        
+
     }
-    
+
     table.appendChild(tableHead)
     table.appendChild(tableBody)
-    
+
 
     return table
-    
+
 }
 
-function createTables(jsonFile){
-    createTable(jsonFile,1)
-    createTable(jsonFile,2)
+// Function for creating tables 
+function createTables(jsonFile) {
+    createTable(jsonFile, 1)
+    createTable(jsonFile, 2)
 }
 
 createTables(jsonData)
